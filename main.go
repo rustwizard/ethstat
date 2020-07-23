@@ -1,5 +1,5 @@
 /*
-Copyright © 2020 Rust
+Copyright © 2020 Rust Wizard
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "ethstat/cmd"
+import "github.com/rustwizard/ethstat/cmd"
 
 func main() {
 	cmd.Execute()
