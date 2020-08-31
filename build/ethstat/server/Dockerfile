@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY ../../.. .
 
-RUN go get -u github.com/gobuffalo/packr/packr && go mod download && packr
+RUN go get -u github.com/gobuffalo/packr/v2/packr2 && go mod download && packr2
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 

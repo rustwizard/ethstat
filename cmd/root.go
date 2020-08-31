@@ -1,42 +1,40 @@
-/*
-Copyright © 2020 Rust
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 package cmd
 
 import (
 	"fmt"
 	"os"
+	"reflect"
+	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var (
+	cfgFile string
+	Conf    Config
+)
+
+type Config struct {
+	DB           struct{
+		Host         string `mapstructure:"HOST"`
+		Port         string `mapstructure:"PORT"`
+		User         string `mapstructure:"USER"`
+		Password     string `mapstructure:"PASSWORD"`
+		DatabaseName string `mapstructure:"DB"`
+		Schema       string `mapstructure:"SCHEME"`
+		SSL          string `mapstructure:"SSL"`
+		MaxPoolSize  int    `mapstructure:"POOL_SIZE"`
+	}
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "ethstat",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "service for parsing ethereum blocks",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -89,4 +87,42 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
+
+	if err := BindEnvs(Conf); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	//viper.Debug()
+
+	if err := viper.Unmarshal(&Conf); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
+
+func BindEnvs(iface interface{}, parts ...string) error {
+	ifv := reflect.ValueOf(iface)
+	ift := reflect.TypeOf(iface)
+	for i := 0; i < ift.NumField(); i++ {
+		v := ifv.Field(i)
+		t := ift.Field(i)
+		tv, ok := t.Tag.Lookup("mapstructure")
+		if !ok {
+			continue
+		}
+		switch v.Kind() {
+		case reflect.Struct:
+			if err := BindEnvs(v.Interface(), append(parts, tv)...); err != nil {
+				return errors.New("bind env")
+			}
+		default:
+			if err := viper.BindEnv(strings.Join(append(parts, tv), ".")); err != nil {
+				return errors.New("bind env")
+			}
+		}
+	}
+
+	return nil
+}
+
