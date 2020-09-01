@@ -57,9 +57,10 @@ func (d *DB) Connect(dbc *Config) error {
 	for retry < maxRetry {
 		db, err = pgxpool.ConnectConfig(context.Background(), poolConfig)
 		if err != nil {
-			d.log.Error().Err(err).Int("retry", retry).Dur("second", ttlRetry+1<<retry).Msg("")
+			d.log.Error().Err(err).Int("retry", retry).
+				Dur("second", ttlRetry+(1<<retry)*time.Second).Msg("")
 			retry++
-			time.Sleep(ttlRetry + 1<<retry)
+			time.Sleep(ttlRetry + (1<<retry)*time.Second)
 			continue
 		}
 		break
