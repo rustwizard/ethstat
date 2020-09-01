@@ -18,7 +18,7 @@ var migrateDownCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		log := zerolog.New(os.Stdout).With().Caller().Logger().With().Str("pkg", "migrate down").Logger()
 
-		dns := fmt.Sprintf("sslmode=%s host=%s port=%s user=%s password='%s' dbname=%s",
+		dns := fmt.Sprintf("sslmode=%s host=%s port=%d user=%s password='%s' dbname=%s",
 			Conf.DB.SSL,
 			Conf.DB.Host,
 			Conf.DB.Port,

@@ -10,7 +10,7 @@ import (
 	"github.com/rustwizard/ethstat/internal/pg"
 	"github.com/spf13/cobra"
 
-	homedir "github.com/mitchellh/go-homedir"
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
@@ -85,7 +85,7 @@ func initConfig() {
 		os.Exit(1)
 	}
 
-	//viper.Debug()
+	viper.Debug()
 
 	if err := viper.Unmarshal(&Conf); err != nil {
 		fmt.Println(err)

@@ -17,7 +17,7 @@ const (
 
 type Config struct {
 	Host         string `mapstructure:"HOST"`
-	Port         string `mapstructure:"PORT"`
+	Port         int    `mapstructure:"PORT"`
 	User         string `mapstructure:"USER"`
 	Password     string `mapstructure:"PASSWORD"`
 	DatabaseName string `mapstructure:"DB"`
@@ -36,7 +36,7 @@ func NewDB(log zerolog.Logger) *DB {
 }
 
 func (d *DB) Connect(dbc *Config) error {
-	args := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s&pool_max_conns=%d",
+	args := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s&pool_max_conns=%d",
 		dbc.User,
 		dbc.Password,
 		dbc.Host,
