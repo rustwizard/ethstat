@@ -3,6 +3,6 @@ db:
   port: 5432
   user: postgres
   password: postgres
-  databasename: ethstat
+  name: ethstat
   ssl: disable
-  maxpoolsize: 100
+  pool_size: 100

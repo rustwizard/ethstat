@@ -20,7 +20,7 @@ type Config struct {
 	Port         int    `mapstructure:"PORT"`
 	User         string `mapstructure:"USER"`
 	Password     string `mapstructure:"PASSWORD"`
-	DatabaseName string `mapstructure:"DB"`
+	DatabaseName string `mapstructure:"NAME"`
 	Schema       string `mapstructure:"SCHEME"`
 	SSL          string `mapstructure:"SSL"`
 	MaxPoolSize  int    `mapstructure:"POOL_SIZE"`

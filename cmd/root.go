@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"github.com/rustwizard/ethstat/internal/pg"
 	"github.com/spf13/cobra"
 
@@ -76,8 +77,8 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		log.Error().Err(err).Msg("can't read config file")
 	}
 
 	if err := BindEnvs(Conf); err != nil {
@@ -85,12 +86,14 @@ func initConfig() {
 		os.Exit(1)
 	}
 
-	viper.Debug()
+	// viper.Debug()
 
 	if err := viper.Unmarshal(&Conf); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	log.Info().Interface("config", Conf).Msg("using config file")
 }
 
 func BindEnvs(iface interface{}, parts ...string) error {
