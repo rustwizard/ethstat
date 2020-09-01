@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/rustwizard/ethstat/internal/pg"
 	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -19,16 +20,7 @@ var (
 )
 
 type Config struct {
-	DB           struct{
-		Host         string `mapstructure:"HOST"`
-		Port         string `mapstructure:"PORT"`
-		User         string `mapstructure:"USER"`
-		Password     string `mapstructure:"PASSWORD"`
-		DatabaseName string `mapstructure:"DB"`
-		Schema       string `mapstructure:"SCHEME"`
-		SSL          string `mapstructure:"SSL"`
-		MaxPoolSize  int    `mapstructure:"POOL_SIZE"`
-	}
+	DB pg.Config
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -125,4 +117,3 @@ func BindEnvs(iface interface{}, parts ...string) error {
 
 	return nil
 }
-
