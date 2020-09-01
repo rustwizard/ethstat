@@ -7,9 +7,11 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
+	"github.com/rustwizard/ethstat/internal/pg"
 	"github.com/spf13/cobra"
 
-	homedir "github.com/mitchellh/go-homedir"
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
@@ -19,16 +21,7 @@ var (
 )
 
 type Config struct {
-	DB           struct{
-		Host         string `mapstructure:"HOST"`
-		Port         string `mapstructure:"PORT"`
-		User         string `mapstructure:"USER"`
-		Password     string `mapstructure:"PASSWORD"`
-		DatabaseName string `mapstructure:"DB"`
-		Schema       string `mapstructure:"SCHEME"`
-		SSL          string `mapstructure:"SSL"`
-		MaxPoolSize  int    `mapstructure:"POOL_SIZE"`
-	}
+	DB pg.Config
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -84,8 +77,8 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		log.Error().Err(err).Msg("can't read config file")
 	}
 
 	if err := BindEnvs(Conf); err != nil {
@@ -93,12 +86,14 @@ func initConfig() {
 		os.Exit(1)
 	}
 
-	//viper.Debug()
+	// viper.Debug()
 
 	if err := viper.Unmarshal(&Conf); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	log.Info().Interface("config", Conf).Msg("using config file")
 }
 
 func BindEnvs(iface interface{}, parts ...string) error {
@@ -125,4 +120,3 @@ func BindEnvs(iface interface{}, parts ...string) error {
 
 	return nil
 }
-
