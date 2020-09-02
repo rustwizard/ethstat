@@ -46,14 +46,17 @@ func (c *Client) Dial() error {
 		return errors.Wrap(err, "eth client: dial")
 	}
 
-	cl, err := ethclient.Dial(c.conf.URL)
+	ctx, cancel := context.WithTimeout(context.Background(), c.conf.RequestTTL)
+	defer cancel()
+
+	cl, err := ethclient.DialContext(ctx, c.conf.URL)
 	if err != nil {
 		return errors.Wrap(err, "eth client: dial")
 	}
 
 	c.cl = cl
 
-	c.chainID, err = cl.NetworkID(context.Background())
+	c.chainID, err = cl.NetworkID(ctx)
 	if err != nil {
 		return errors.Wrap(err, "eth client: dial")
 	}
