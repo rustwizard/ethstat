@@ -50,7 +50,7 @@ func TestConnect(t *testing.T) {
 	db := pg.NewDB(log)
 	err = db.Connect(&pg.Config{
 		Host:         "127.0.0.1",
-		Port:         "65432",
+		Port:         65432,
 		User:         "",
 		Password:     "",
 		DatabaseName: "",
