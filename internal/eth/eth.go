@@ -13,7 +13,7 @@ import (
 const defaultRequestTTL = 5 * time.Second
 
 type Config struct {
-	URL        string        `mapstructure:"URL" valid:"require"`
+	URL        string        `mapstructure:"URL" valid:"url,required"`
 	RequestTTL time.Duration `valid:"-"`
 }
 
