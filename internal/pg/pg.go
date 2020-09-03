@@ -45,7 +45,6 @@ func (d *DB) Connect(dbc *Config) error {
 		dbc.SSL,
 		dbc.MaxPoolSize,
 	)
-
 	poolConfig, err := pgxpool.ParseConfig(args)
 	if err != nil {
 		d.log.Error().Err(err).Msg("parse config")
