@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
-
 	"github.com/rs/zerolog"
 )
 
@@ -52,6 +52,8 @@ func (d *DB) Connect(dbc *Config) error {
 		return err
 	}
 
+	poolConfig.BeforeAcquire = d.CheckConn
+
 	var db *pgxpool.Pool
 	retry := 1
 	for retry < maxRetry {
@@ -68,4 +70,37 @@ func (d *DB) Connect(dbc *Config) error {
 
 	d.Pool = db
 	return err
+}
+
+func (d *DB) CheckConn(ctx context.Context, pgc *pgx.Conn) bool {
+	if pgc == nil {
+		return false
+	}
+
+	if err := pgc.Ping(ctx); err != nil {
+		attempt := 0
+		ticker := time.NewTicker(5 * time.Second)
+		defer ticker.Stop()
+
+		for range ticker.C {
+			if attempt >= maxRetry {
+				d.log.Info().Msg("postgres: max reconnect attempt")
+				return false
+			}
+			attempt++
+
+			d.log.Info().Msg("postgres: try to reconnect")
+
+			newPgc, connErr := d.Pool.Acquire(ctx)
+			if connErr != nil {
+				d.log.Error().Err(err).Msg("postgres: lost connection")
+				continue
+			}
+
+			pgc = newPgc.Conn()
+			break
+		}
+	}
+
+	return pgc != nil
 }
