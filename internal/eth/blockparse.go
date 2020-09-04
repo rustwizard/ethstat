@@ -9,10 +9,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (c *Client) FetchBlocks(fromblock int64) <-chan *types.Block {
+func (c *Client) FetchBlocks(fromBlock int64) <-chan *types.Block {
 	out := make(chan *types.Block)
 
-	blockNum := big.NewInt(fromblock)
+	blockNum := big.NewInt(fromBlock)
 	go func() {
 		defer close(out)
 		for {
@@ -28,11 +28,11 @@ func (c *Client) FetchBlocks(fromblock int64) <-chan *types.Block {
 	return out
 }
 
-func (c *Client) blockByNumber(blocknum *big.Int) (*types.Block, error) {
+func (c *Client) blockByNumber(blockNum *big.Int) (*types.Block, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), c.conf.RequestTTL)
 	defer cancel()
 
-	block, err := c.cl.BlockByNumber(ctx, blocknum)
+	block, err := c.cl.BlockByNumber(ctx, blockNum)
 	if err != nil {
 		return block, errors.Wrap(err, "fetch block: get block by number")
 	}
