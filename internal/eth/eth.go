@@ -21,6 +21,7 @@ type Client struct {
 	conf    Config
 	cl      *ethclient.Client
 	chainID *big.Int
+	errCh   chan error
 }
 
 func NewClient(conf Config) *Client {
@@ -28,7 +29,8 @@ func NewClient(conf Config) *Client {
 		conf.RequestTTL = defaultRequestTTL
 	}
 	return &Client{
-		conf: conf,
+		conf:  conf,
+		errCh: make(chan error),
 	}
 }
 

@@ -1,6 +1,7 @@
 package eth_test
 
 import (
+	"math/big"
 	"testing"
 	"time"
 
@@ -22,4 +23,55 @@ func TestDial(t *testing.T) {
 	})
 	err = ethws.Dial()
 	require.NoError(t, err)
+}
+
+func TestBlockByNumber(t *testing.T) {
+	ethws := eth.NewClient(eth.Config{
+		URL:        "wss://ropsten.infura.io/ws/v3/940d66278ca849f690d6c95a4551c0de",
+		RequestTTL: 5 * time.Second,
+	})
+	err := ethws.Dial()
+	require.NoError(t, err)
+
+	block, err := ethws.BlockByNumber(big.NewInt(1000))
+	require.NoError(t, err)
+	require.Equal(t, int64(1000), block.Number().Int64())
+}
+
+func TestHeaderBlockNum(t *testing.T) {
+	ethws := eth.NewClient(eth.Config{
+		URL:        "wss://ropsten.infura.io/ws/v3/940d66278ca849f690d6c95a4551c0de",
+		RequestTTL: 5 * time.Second,
+	})
+	err := ethws.Dial()
+	require.NoError(t, err)
+
+	headerNum, err := ethws.HeaderBlockNum()
+	require.NoError(t, err)
+	require.NotNil(t, headerNum)
+	t.Log("header_block_num", headerNum.Int64())
+}
+
+func TestFetchBlocks(t *testing.T) {
+	ethws := eth.NewClient(eth.Config{
+		URL:        "wss://ropsten.infura.io/ws/v3/940d66278ca849f690d6c95a4551c0de",
+		RequestTTL: 5 * time.Second,
+	})
+	err := ethws.Dial()
+	require.NoError(t, err)
+
+	headerNum, err := ethws.HeaderBlockNum()
+	require.NoError(t, err)
+	require.NotNil(t, headerNum)
+
+	headerNum.Sub(headerNum, big.NewInt(10))
+
+	i := 1
+	for block := range ethws.FetchBlocks(headerNum.Int64()) {
+		t.Log("block", block.Number())
+		if i >= 10 {
+			break
+		}
+		i++
+	}
 }
