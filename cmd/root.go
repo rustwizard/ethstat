@@ -8,7 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"github.com/rustwizard/ethstat/internal/pg"
+	"github.com/rustwizard/cleargo/db/pg"
 	"github.com/spf13/cobra"
 
 	"github.com/mitchellh/go-homedir"
