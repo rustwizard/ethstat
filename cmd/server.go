@@ -33,6 +33,5 @@ func hello(c echo.Context) error {
 
 func init() {
 	rootCmd.AddCommand(serverCmd)
-	serverCmd.Flags().StringP("config", "c", "config.yaml",
-		"--config config.yaml")
+	serverCmd.Flags().StringVar(&cfgFile, "config", "", "-- config config.yaml")
 }

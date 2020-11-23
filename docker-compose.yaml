@@ -11,16 +11,16 @@ services:
       ETH_SERVER_BIND: 0.0.0.0:8080
       ETH_SERVER_REQUEST_TTL: 3s
       ETH_SERVER_TRANSPORT: http
-      ETH_PG_HOST: pg
-      ETH_PG_PORT: 5432
-      ETH_PG_USER: postgres
-      ETH_PG_PASSWORD: postgres
-      ETH_PG_DB: ethstat
-      ETH_PG_SSL: disable
-      ETH_PG_POOL_SIZE: 100
+      PG_HOST: pg
+      PG_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_NAME: ethstat
+      PG_SSL: disable
+      PG_POOL_SIZE: 100
 
   pg:
-    image: rustwizard/postgres:12
+    image: rustwizard/postgres:13
     build:
       context: build/pg
     container_name: pg
