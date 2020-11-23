@@ -17,7 +17,7 @@ func (c *Client) FetchBlocks(fromBlock int64) <-chan *types.Block {
 		defer close(out)
 		for {
 			time.Sleep(5 * time.Second)
-			block, err := c.blockByNumber(blockNum)
+			block, err := c.BlockByNumber(blockNum)
 			if err != nil {
 				c.errCh <- err
 				continue
@@ -28,7 +28,7 @@ func (c *Client) FetchBlocks(fromBlock int64) <-chan *types.Block {
 	return out
 }
 
-func (c *Client) blockByNumber(blockNum *big.Int) (*types.Block, error) {
+func (c *Client) BlockByNumber(blockNum *big.Int) (*types.Block, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), c.conf.RequestTTL)
 	defer cancel()
 
