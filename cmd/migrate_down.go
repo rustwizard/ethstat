@@ -15,17 +15,17 @@ import (
 // migrateDownCmd represents the down command
 var migrateDownCmd = &cobra.Command{
 	Use:   "down",
-	Short: "delete migration from DB",
+	Short: "delete migration from PG",
 	Run: func(cmd *cobra.Command, args []string) {
 		log := zerolog.New(os.Stdout).With().Caller().Logger().With().Str("command", "migrate down").Logger()
 		connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s&pool_max_conns=%d",
-			Conf.DB.User,
-			Conf.DB.Password,
-			Conf.DB.Host,
-			Conf.DB.Port,
-			Conf.DB.DatabaseName,
-			Conf.DB.SSL,
-			Conf.DB.MaxPoolSize,
+			Conf.PG.User,
+			Conf.PG.Password,
+			Conf.PG.Host,
+			Conf.PG.Port,
+			Conf.PG.DatabaseName,
+			Conf.PG.SSL,
+			Conf.PG.MaxPoolSize,
 		)
 
 		config, err := pgx.ParseConfig(connStr)

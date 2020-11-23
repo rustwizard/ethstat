@@ -21,7 +21,7 @@ var (
 )
 
 type Config struct {
-	DB pg.Config
+	PG pg.Config `mapstructure:"PG"`
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -74,11 +74,13 @@ func initConfig() {
 		viper.SetConfigName(".ethstat")
 	}
 
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	// viper.SetEnvPrefix("ETH")
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err != nil {
-		log.Error().Err(err).Msg("can't read config file")
+	if err := viper.ReadInConfig(); err == nil {
+		log.Info().Interface("config", Conf).Msg("using config file")
 	}
 
 	if err := BindEnvs(Conf); err != nil {
@@ -92,8 +94,6 @@ func initConfig() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
-	log.Info().Interface("config", Conf).Msg("using config file")
 }
 
 func BindEnvs(iface interface{}, parts ...string) error {

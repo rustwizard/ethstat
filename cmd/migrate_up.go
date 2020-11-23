@@ -15,17 +15,16 @@ import (
 // migrateUpCmd represents the up command
 var migrateUpCmd = &cobra.Command{
 	Use:   "up",
-	Short: "apply migration to DB",
+	Short: "apply migration to PG",
 	Run: func(cmd *cobra.Command, args []string) {
 		log := zerolog.New(os.Stdout).With().Caller().Logger().With().Str("command", "migrate up").Logger()
-		connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s&pool_max_conns=%d",
-			Conf.DB.User,
-			Conf.DB.Password,
-			Conf.DB.Host,
-			Conf.DB.Port,
-			Conf.DB.DatabaseName,
-			Conf.DB.SSL,
-			Conf.DB.MaxPoolSize,
+		connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
+			Conf.PG.User,
+			Conf.PG.Password,
+			Conf.PG.Host,
+			Conf.PG.Port,
+			Conf.PG.DatabaseName,
+			Conf.PG.SSL,
 		)
 
 		config, err := pgx.ParseConfig(connStr)
