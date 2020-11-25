@@ -24,7 +24,7 @@ func Test_EthBlocks_Put(t *testing.T) {
 
 	r := repository.NewETHBlocks(db)
 	err = r.Put(context.Background(), repository.EthBlock{
-		BlockNum: 1000,
+		BlockNum: 1002,
 		Txs:      []string{"test1", "test2", "test3"},
 	})
 	require.NoError(t, err)
