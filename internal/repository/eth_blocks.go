@@ -12,19 +12,15 @@ type EthBlock struct {
 	Txs      []string `db:"txs"`
 }
 
-type ETHBlocks interface {
-	Put(ctx context.Context, item EthBlock) error
-}
-
-type ethBlocks struct {
+type EthBlocks struct {
 	db *pg.DB
 }
 
-func NewETHBlocks(db *pg.DB) ethBlocks {
-	return ethBlocks{db: db}
+func NewETHBlocks(db *pg.DB) EthBlocks {
+	return EthBlocks{db: db}
 }
 
-func (r ethBlocks) Put(ctx context.Context, item EthBlock) error {
+func (r EthBlocks) Put(ctx context.Context, item EthBlock) error {
 	_, err := r.db.Pool.Exec(ctx, `INSERT INTO eth_blocks(block_num, txs) VALUES($1, $2)`,
 		item.BlockNum, item.Txs)
 	if err != nil {
