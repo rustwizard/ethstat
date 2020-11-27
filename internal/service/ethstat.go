@@ -45,7 +45,7 @@ func (e *ETHStat) saveToDB(ctx context.Context, in <-chan repository.EthBlock) <
 		defer close(out)
 		for {
 			for block := range in {
-				log.Info().Interface("block", block).Msg("ethstat: save block")
+				log.Info().Str("pkg", "ethstat").Interface("block", block).Msg("save block")
 				out <- e.ethBlockRepo.Put(ctx, block)
 			}
 		}

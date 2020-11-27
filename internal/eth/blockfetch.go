@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var l = log.Logger.With().Str("package", "eth").Logger()
+var l = log.Logger.With().Str("pkg", "eth").Logger()
 
 func (c *Client) FetchBlocks() <-chan *types.Block {
 	out := make(chan *types.Block)
