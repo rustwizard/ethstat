@@ -12,13 +12,25 @@ import (
 
 var l = log.Logger.With().Str("package", "eth").Logger()
 
-func (c *Client) FetchBlocks(fromBlock int64) <-chan *types.Block {
+func (c *Client) FetchBlocks() <-chan *types.Block {
 	out := make(chan *types.Block)
 
-	blockNum := big.NewInt(fromBlock)
+	blockNum := c.conf.FromBlock
 	go func() {
 		defer close(out)
 		for {
+			headerNum, err := c.HeaderBlockNum()
+			if err != nil {
+				c.errCh <- err
+				time.Sleep(5 * time.Second)
+				continue
+			}
+			l.Info().Int64("header_block_num", headerNum.Int64()).Msg("fetch block")
+
+			if blockNum.Int64() >= headerNum.Int64() {
+				time.Sleep(5 * time.Second)
+				continue
+			}
 			l.Info().Int64("block_num", blockNum.Int64()).Msg("fetch block")
 			block, err := c.BlockByNumber(blockNum)
 			if err != nil {
@@ -27,16 +39,6 @@ func (c *Client) FetchBlocks(fromBlock int64) <-chan *types.Block {
 			}
 			out <- block
 			blockNum.Add(blockNum, big.NewInt(1))
-			headerNum, err := c.HeaderBlockNum()
-			if err != nil {
-				c.errCh <- err
-				time.Sleep(5 * time.Second)
-				continue
-			}
-			l.Info().Int64("header_block_num", headerNum.Int64()).Msg("fetch block")
-			if blockNum.Int64() >= headerNum.Int64() {
-				time.Sleep(5 * time.Second)
-			}
 		}
 	}()
 	return out

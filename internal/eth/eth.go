@@ -13,8 +13,9 @@ import (
 const defaultRequestTTL = 5 * time.Second
 
 type Config struct {
-	URL        string        `mapstructure:"URL" valid:"url,required"`
+	URL        string        `mapstructure:"ETH_URL" valid:"url,required"`
 	RequestTTL time.Duration `valid:"-"`
+	FromBlock  *big.Int      `mapstructure:"ETH_FROM_BLOCK" valid:"-"`
 }
 
 type Client struct {
@@ -61,6 +62,14 @@ func (c *Client) Dial() error {
 	c.chainID, err = cl.NetworkID(ctx)
 	if err != nil {
 		return errors.Wrap(err, "eth client: dial")
+	}
+
+	if c.conf.FromBlock == nil {
+		headerNum, err := c.HeaderBlockNum()
+		if err != nil {
+			return errors.Wrap(err, "eth client: dial: get header")
+		}
+		c.conf.FromBlock = headerNum
 	}
 
 	return nil
