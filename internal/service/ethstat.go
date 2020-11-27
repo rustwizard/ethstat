@@ -1,6 +1,8 @@
 package service
 
 import (
+	"context"
+
 	"github.com/rustwizard/ethstat/internal/eth"
 	"github.com/rustwizard/ethstat/internal/repository"
 )
@@ -32,7 +34,19 @@ func WithETHBlockRepository(ethBlockRepo repository.EthBlocks) Option {
 	}
 }
 
-func (e *ETHStat) Run() error {
-	e.ethCl.ParseBlocks(e.ethCl.FetchBlocks())
-	return nil
+func (e *ETHStat) Run(ctx context.Context) <-chan error {
+	return e.saveToDB(ctx, e.ethCl.ParseBlocks(e.ethCl.FetchBlocks()))
+}
+
+func (e *ETHStat) saveToDB(ctx context.Context, in <-chan repository.EthBlock) <-chan error {
+	out := make(chan error)
+	go func() {
+		defer close(out)
+		for {
+			for block := range in {
+				out <- e.ethBlockRepo.Put(ctx, block)
+			}
+		}
+	}()
+	return out
 }
