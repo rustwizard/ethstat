@@ -17,6 +17,7 @@ func (c *Client) ParseBlocks(in <-chan *types.Block) <-chan repository.EthBlock 
 			for i, tx := range block.Transactions() {
 				ethBlock.Txs[i] = tx.Hash().String()
 			}
+			out <- ethBlock
 		}
 	}()
 	return out

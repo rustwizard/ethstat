@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/rs/zerolog/log"
 	"github.com/rustwizard/ethstat/internal/eth"
 	"github.com/rustwizard/ethstat/internal/repository"
 )
@@ -44,6 +45,7 @@ func (e *ETHStat) saveToDB(ctx context.Context, in <-chan repository.EthBlock) <
 		defer close(out)
 		for {
 			for block := range in {
+				log.Info().Interface("block", block).Msg("ethstat: save block")
 				out <- e.ethBlockRepo.Put(ctx, block)
 			}
 		}
