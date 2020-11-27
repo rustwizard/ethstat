@@ -60,16 +60,10 @@ func TestFetchBlocks(t *testing.T) {
 	err := ethws.Dial()
 	require.NoError(t, err)
 
-	headerNum, err := ethws.HeaderBlockNum()
-	require.NoError(t, err)
-	require.NotNil(t, headerNum)
-
-	headerNum.Sub(headerNum, big.NewInt(10))
-
 	i := 1
-	for block := range ethws.FetchBlocks(headerNum.Int64()) {
+	for block := range ethws.FetchBlocks() {
 		t.Log("block", block.Number())
-		if i >= 10 {
+		if i >= 2 { // get only 2 blocks and stop
 			break
 		}
 		i++
