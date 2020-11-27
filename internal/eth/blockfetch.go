@@ -30,6 +30,7 @@ func (c *Client) FetchBlocks(fromBlock int64) <-chan *types.Block {
 			headerNum, err := c.HeaderBlockNum()
 			if err != nil {
 				c.errCh <- err
+				time.Sleep(5 * time.Second)
 				continue
 			}
 			l.Info().Int64("header_block_num", headerNum.Int64()).Msg("fetch block")
