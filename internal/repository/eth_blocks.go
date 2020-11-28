@@ -7,7 +7,7 @@ import (
 	"github.com/rustwizard/cleargo/db/pg"
 )
 
-type EthBlock struct {
+type EthBlockItem struct {
 	BlockNum int64    `db:"block_num"`
 	Txs      []string `db:"txs"`
 }
@@ -20,7 +20,7 @@ func NewETHBlocks(db *pg.DB) EthBlocks {
 	return EthBlocks{db: db}
 }
 
-func (r EthBlocks) Put(ctx context.Context, item EthBlock) error {
+func (r EthBlocks) Put(ctx context.Context, item EthBlockItem) error {
 	_, err := r.db.Pool.Exec(ctx, `INSERT INTO eth_blocks(block_num, txs) VALUES($1, $2)`,
 		item.BlockNum, item.Txs)
 	if err != nil {

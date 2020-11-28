@@ -5,12 +5,12 @@ import (
 	"github.com/rustwizard/ethstat/internal/repository"
 )
 
-func (c *Client) ParseBlocks(in <-chan *types.Block) <-chan repository.EthBlock {
-	out := make(chan repository.EthBlock)
+func (c *Client) ParseBlocks(in <-chan *types.Block) <-chan repository.EthBlockItem {
+	out := make(chan repository.EthBlockItem)
 	go func() {
 		defer close(out)
 		for block := range in {
-			ethBlock := repository.EthBlock{
+			ethBlock := repository.EthBlockItem{
 				BlockNum: block.Number().Int64(),
 			}
 			ethBlock.Txs = make([]string, len(block.Transactions()))
