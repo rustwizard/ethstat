@@ -39,7 +39,7 @@ func (e *ETHStat) Run(ctx context.Context) <-chan error {
 	return e.saveToDB(ctx, e.ethCl.ParseBlocks(e.ethCl.FetchBlocks()))
 }
 
-func (e *ETHStat) saveToDB(ctx context.Context, in <-chan repository.EthBlock) <-chan error {
+func (e *ETHStat) saveToDB(ctx context.Context, in <-chan repository.EthBlockItem) <-chan error {
 	out := make(chan error)
 	go func() {
 		defer close(out)
