@@ -74,3 +74,8 @@ func (c *Client) Dial() error {
 
 	return nil
 }
+
+type Block struct {
+	BlockNum int64
+	Txs      []string
+}
