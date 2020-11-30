@@ -2,15 +2,14 @@ package eth
 
 import (
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/rustwizard/ethstat/internal/repository"
 )
 
-func (c *Client) ParseBlocks(in <-chan *types.Block) <-chan repository.EthBlockItem {
-	out := make(chan repository.EthBlockItem)
+func (c *Client) ParseBlocks(in <-chan *types.Block) <-chan Block {
+	out := make(chan Block)
 	go func() {
 		defer close(out)
 		for block := range in {
-			ethBlock := repository.EthBlockItem{
+			ethBlock := Block{
 				BlockNum: block.Number().Int64(),
 			}
 			ethBlock.Txs = make([]string, len(block.Transactions()))
