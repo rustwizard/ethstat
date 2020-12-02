@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/asaskevich/govalidator"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/pkg/errors"
 )
@@ -19,10 +20,11 @@ type Config struct {
 }
 
 type Client struct {
-	conf    Config
-	cl      *ethclient.Client
-	chainID *big.Int
-	errCh   chan error
+	conf      Config
+	cl        *ethclient.Client
+	chainID   *big.Int
+	EIPSigner types.EIP155Signer
+	errCh     chan error
 }
 
 func NewClient(conf Config) *Client {
@@ -72,10 +74,27 @@ func (c *Client) Dial() error {
 		c.conf.FromBlock = headerNum
 	}
 
+	c.EIPSigner = types.NewEIP155Signer(c.chainID)
+
 	return nil
 }
 
 type Block struct {
 	BlockNum int64
-	Txs      []string
+	Txs      []Tx
+}
+
+type Tx struct {
+	ID    string
+	From  string
+	To    string
+	Value *big.Int
+}
+
+func (b Block) TxList() []string {
+	txList := make([]string, len(b.Txs))
+	for i, v := range b.Txs {
+		txList[i] = v.ID
+	}
+	return txList
 }

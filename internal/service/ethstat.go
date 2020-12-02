@@ -48,7 +48,7 @@ func (e *ETHStat) saveToDB(ctx context.Context, in <-chan eth.Block) <-chan erro
 				log.Info().Str("pkg", "ethstat").Interface("block", block).Msg("save block")
 				out <- e.ethBlockRepo.Put(ctx, repository.EthBlockItem{
 					BlockNum: block.BlockNum,
-					Txs:      block.Txs,
+					Txs:      block.TxList(),
 				})
 			}
 		}

@@ -38,7 +38,7 @@ func TestRun(t *testing.T) {
 
 	svc := service.NewETHStat(service.WithETHClient(ethws), service.WithETHBlockRepository(r))
 
-	for err := range svc.Run(context.Background()) {
+	for err = range svc.Run(context.Background()) {
 		if err != nil {
 			t.Error(err)
 		}
