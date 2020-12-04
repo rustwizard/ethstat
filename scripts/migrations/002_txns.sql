@@ -5,7 +5,7 @@ CREATE TABLE eth_txs (
     tx_id text,
     from_addr text,
     to_addr text,
-    value numeric(10,18),
+    value numeric(78,0),
     PRIMARY KEY (block_num, tx_id)
 );
 
