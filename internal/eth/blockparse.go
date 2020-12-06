@@ -24,10 +24,11 @@ func (c *Client) ParseBlocks(in <-chan *types.Block) <-chan Block {
 					}
 
 					ethBlock.Txs = append(ethBlock.Txs, Tx{
-						ID:    tx.Hash().String(),
-						From:  msg.From().String(),
-						To:    tx.To().String(),
-						Value: tx.Value(),
+						BlockNum: block.Number().Int64(),
+						ID:       tx.Hash().String(),
+						From:     msg.From().String(),
+						To:       tx.To().String(),
+						Value:    tx.Value(),
 					})
 
 					out <- ethBlock
