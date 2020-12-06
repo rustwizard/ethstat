@@ -85,10 +85,11 @@ type Block struct {
 }
 
 type Tx struct {
-	ID    string
-	From  string
-	To    string
-	Value *big.Int
+	BlockNum int64
+	ID       string
+	From     string
+	To       string
+	Value    *big.Int
 }
 
 func (b Block) TxList() []string {
