@@ -6,8 +6,11 @@ CREATE TABLE eth_txs (
     from_addr text,
     to_addr text,
     value numeric(78,0),
-    PRIMARY KEY (block_num, tx_id)
+    PRIMARY KEY (id)
 );
+
+CREATE INDEX eth_txs_block_num_tx_id_from_addr_index
+    ON eth_txs (block_num, tx_id, from_addr);
 
 
 -- +migrate Down

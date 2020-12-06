@@ -30,11 +30,14 @@ func (c *Client) ParseBlocks(in <-chan *types.Block) <-chan Block {
 						To:       tx.To().String(),
 						Value:    tx.Value(),
 					})
-
-					out <- ethBlock
 				}
+			}
+
+			if len(ethBlock.Txs) > 0 {
+				out <- ethBlock
 			}
 		}
 	}()
+
 	return out
 }

@@ -41,7 +41,7 @@ func (r EthBlocks) Put(ctx context.Context, item EthBlockItem) error {
 func (r EthBlocks) PutTxs(ctx context.Context, txs []TxItem) error {
 	batch := &pgx.Batch{}
 	for _, tx := range txs {
-		batch.Queue(`INSERT INTO eth_txs(block_num, tx_id, from_addr, to_addr, values) 
+		batch.Queue(`INSERT INTO eth_txs(block_num, tx_id, from_addr, to_addr, value) 
 							VALUES($1, $2, $3, $4, $5)`, tx.BlockNum, tx.ID, tx.From, tx.To, tx.Value)
 	}
 
