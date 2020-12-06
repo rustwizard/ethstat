@@ -13,7 +13,7 @@ var migrateCmd = &cobra.Command{
 }
 
 var Migrations = &migrate.PackrMigrationSource{
-	Box: packr.New("Migrations","../scripts/migrations"),
+	Box: packr.New("Migrations", "../scripts/migrations"),
 }
 
 func init() {
