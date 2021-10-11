@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/asaskevich/govalidator v0.0.0-20200819183940-29e1ff8eb0bb
 	github.com/btcsuite/btcd v0.22.0-beta // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/ethereum/go-ethereum v1.10.9
 	github.com/gobuffalo/packr/v2 v2.7.1
 	github.com/jackc/pgx/v4 v4.9.2
